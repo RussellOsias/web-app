@@ -19,29 +19,18 @@ const googleProvider = new GoogleAuthProvider();
 // DOM Elements
 const loginForm = document.getElementById('loginForm');
 const googleLoginButton = document.getElementById('googleLoginButton');
-const logoutButton = document.getElementById('logoutButton');
-const profileSection = document.getElementById('profileSection');
-const profileEmail = document.getElementById('profileEmail');
 
 // Handle Authentication State
 onAuthStateChanged(auth, (user) => {
   if (user) {
     console.log("User is signed in:", user.email);
 
-    // Show profile section
-    profileSection.classList.remove('hidden');
-    profileEmail.textContent = user.email;
-
-    // Hide login form and show logout button
-    loginForm.classList.add('hidden');
-    logoutButton.classList.remove('hidden');
+    // Redirect to dashboard after login
+    setTimeout(() => {
+      window.location.href = "dashboard.html";
+    }, 500); // 500ms delay
   } else {
     console.log("User is signed out");
-
-    // Show login form and hide profile section
-    loginForm.classList.remove('hidden');
-    profileSection.classList.add('hidden');
-    logoutButton.classList.add('hidden');
   }
 });
 
@@ -84,21 +73,6 @@ googleLoginButton.addEventListener('click', () => {
     })
     .catch((error) => {
       console.error("Google login failed:", error);
-      alert("Error: " + error.message);
-    });
-});
-
-// Logout User
-logoutButton.addEventListener('click', () => {
-  console.log("Attempting to log out...");
-
-  signOut(auth)
-    .then(() => {
-      console.log("User logged out successfully.");
-      alert("Logged out successfully!");
-    })
-    .catch((error) => {
-      console.error("Logout failed:", error);
       alert("Error: " + error.message);
     });
 });
