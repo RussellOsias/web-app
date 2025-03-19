@@ -1,5 +1,6 @@
+
 import { auth } from "./firebase-config.js";
-import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
+import { createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
 import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 
 // Initialize Firestore
@@ -23,15 +24,12 @@ registerForm.addEventListener('submit', (e) => {
 
       console.log("User registered successfully:", user.email);
 
-      // Save additional user data to Firestore
-      return setDoc(doc(db, "users", user.uid), {
-        email: user.email,
-        createdAt: new Date()
-      });
+      // Send email verification
+      return sendEmailVerification(user);
     })
     .then(() => {
-      alert("User registered successfully!");
-      window.location.href = "index.html"; // Redirect to login page after registration
+      alert("Registration successful! Please check your email to verify your account.");
+      window.location.href = "index.html"; // Redirect to login page
     })
     .catch((error) => {
       console.error("Registration failed:", error);
