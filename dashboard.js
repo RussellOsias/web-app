@@ -1,9 +1,9 @@
 import { auth, db, doc, getDoc, updateDoc } from "./firebase-config.js";
-import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js"; 
+import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
 
 const profileEmail = document.getElementById("profileEmail");
 const logoutButton = document.getElementById("logoutButton");
-const mfaToggleSwitch = document.getElementById("mfaToggleSwitch");2
+const mfaToggleSwitch = document.getElementById("mfaToggleSwitch");
 
 onAuthStateChanged(auth, async (user) => {
   if (user) {
@@ -21,6 +21,7 @@ onAuthStateChanged(auth, async (user) => {
 logoutButton.addEventListener("click", async () => {
   try {
     await signOut(auth);
+    sessionStorage.clear(); // Clear OTP verification flag on logout
     window.location.href = "index.html";
   } catch (error) {
     alert("Logout failed: " + error.message);
