@@ -2,56 +2,77 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Dashboard</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"  rel="stylesheet">
+  <style>
+    body {
+      background-color: #000;
+      color: #fff;
+    }
+    .btn-primary {
+      background-color: #3e41e5;
+      border-color: #3e41e5;
+    }
+    .btn-primary:hover {
+      background-color: #3e41e5;
+      border-color: #3e41e5;
+    }
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #ccc;
+      transition: 0.4s;
+      border-radius: 34px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: 0.4s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+  </style>
 </head>
-<body class="bg-gray-100">
-  <!-- Sidebar -->
-  <div class="flex h-screen bg-gray-200">
-    <div class="w-64 bg-gray-800 text-white p-4">
-      <h2 class="text-xl font-bold mb-4">Sidebar</h2>
-      <ul>
-        <li class="mb-2"><a href="#" class="hover:text-red-500">Home</a></li>
-        <li class="mb-2"><a href="#" class="hover:text-red-500">Profile</a></li>
-        <li class="mb-2"><a href="#" class="hover:text-red-500">Settings</a></li>
-      </ul>
-    </div>
+<body class="flex flex-col items-center justify-center min-h-screen bg-black text-white">
+  <div class="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-lg shadow-lg">
+    <h1 class="text-3xl font-bold text-center">Welcome to Dashboard</h1>
+    <p>Email: <span id="profileEmail"></span></p>
 
-    <!-- Main Content -->
-    <div class="flex-1 flex flex-col">
-      <!-- Top Bar -->
-      <div class="bg-white p-4 flex justify-between items-center">
-        <h1 class="text-xl font-bold">Welcome to the Dashboard</h1>
-        <button id="logoutButton" class="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
-          Logout
-        </button>
-      </div>
+    <label class="flex justify-between items-center">
+      Enable MFA:
+      <label class="toggle-switch">
+        <input type="checkbox" id="mfaToggleSwitch">
+        <span class="slider"></span>
+      </label>
+    </label>
 
-      <!-- Content Area -->
-      <div class="flex-1 p-8 bg-gray-100">
-        <div class="bg-white p-6 rounded-lg shadow-md">
-          <p>This is the main content area. You can customize it further.</p>
-        </div>
-      </div>
-    </div>
+    <button id="logoutButton" class="hidden w-full px-4 py-2 font-bold text-white bg-red-600 rounded-md hover:bg-red-700 focus:outline-none">
+      Logout
+    </button>
   </div>
 
-  <!-- Logout Script -->
-  <script type="module">
-    import { getAuth, signOut } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
-
-    const auth = getAuth();
-    document.getElementById('logoutButton').addEventListener('click', () => {
-      signOut(auth)
-        .then(() => {
-          alert("Logged out successfully!");
-          window.location.href = 'index.html'; // Redirect to login page
-        })
-        .catch((error) => {
-          alert("Error: " + error.message);
-        });
-    });
-  </script>
+  <script type="module" src="dashboard.js" defer></script>
 </body>
 </html>
