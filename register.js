@@ -1,37 +1,37 @@
-import { auth } from "./firebase-config.js";
+import { auth, db } from "./firebase-config.js";
 import { createUserWithEmailAndPassword, sendEmailVerification } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-auth.js";
-import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
-
-// Initialize Firestore
-const db = getFirestore();
+import { doc, setDoc } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-firestore.js";
 
 // DOM Elements
 const registerForm = document.getElementById('registerForm');
 
 // Register User
-registerForm.addEventListener('submit', (e) => {
+registerForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
   const email = document.getElementById('reg-email').value;
   const password = document.getElementById('reg-password').value;
 
-  console.log("Attempting to register with:", email, password);
+  try {
+    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+    const user = userCredential.user;
 
-  createUserWithEmailAndPassword(auth, email, password)
-    .then((userCredential) => {
-      const user = userCredential.user;
+    console.log("User registered:", user.email);
 
-      console.log("User registered successfully:", user.email);
-
-      // Send email verification
-      return sendEmailVerification(user);
-    })
-    .then(() => {
-      alert("Registration successful! Please check your email to verify your account.");
-      window.location.href = "index.html"; // Redirect to login page
-    })
-    .catch((error) => {
-      console.error("Registration failed:", error);
-      alert("Error: " + error.message);
+    // Save to Firestore
+    await setDoc(doc(db, "users", user.uid), {
+      email: user.email,
+      createdAt: new Date().toISOString()
     });
+
+    // Send verification email
+    await sendEmailVerification(user);
+
+    alert("Registered! Check your email for verification.");
+    window.location.href = "index.html";
+
+  } catch (error) {
+    console.error("Error registering:", error);
+    alert("Error: " + error.message);
+  }
 });
